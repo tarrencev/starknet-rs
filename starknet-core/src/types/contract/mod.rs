@@ -85,6 +85,7 @@ pub struct SierraClassEntrypoint {
 pub enum AbiEntry {
     Function(AbiFunction),
     Event(AbiEvent),
+    Struct(AbiStruct),
 }
 
 #[derive(Debug)]
@@ -117,6 +118,21 @@ pub struct AbiFunction {
 pub struct AbiEvent {
     pub name: String,
     pub inputs: Vec<AbiInput>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "no_unknown_fields", serde(deny_unknown_fields))]
+pub struct AbiStruct {
+    pub name: String,
+    pub members: Vec<AbiStructMember>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "no_unknown_fields", serde(deny_unknown_fields))]
+pub struct AbiStructMember {
+    pub name: String,
+    #[serde(rename = "type")]
+    pub ty: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -407,6 +423,18 @@ mod tests {
         // Artifact generated from cairo v1.0.0-alpha.3
         match serde_json::from_str::<ContractArtifact>(include_str!(
             "../../../test-data/contracts/artifacts/erc20_sierra.txt"
+        )) {
+            Ok(ContractArtifact::SierraClass(_)) => {}
+            _ => panic!("Unexpected result"),
+        }
+    }
+
+    #[test]
+    #[cfg_attr(target_arch = "wasm32", wasm_bindgen_test::wasm_bindgen_test)]
+    fn test_sierra_class_w_struct_deser() {
+        // Artifact generated from cairo v1.0.0-alpha.3
+        match serde_json::from_str::<ContractArtifact>(include_str!(
+            "../../../test-data/contracts/artifacts/component_sierra.txt"
         )) {
             Ok(ContractArtifact::SierraClass(_)) => {}
             _ => panic!("Unexpected result"),
