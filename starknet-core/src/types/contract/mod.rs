@@ -108,7 +108,7 @@ pub struct CompiledClassEntrypoint {
 pub struct AbiFunction {
     pub name: String,
     pub inputs: Vec<AbiInput>,
-    pub output_ty: String,
+    pub outputs: Vec<AbiOuput>,
     pub state_mutability: StateMutability,
 }
 
@@ -123,6 +123,14 @@ pub struct AbiEvent {
 #[cfg_attr(feature = "no_unknown_fields", serde(deny_unknown_fields))]
 pub struct AbiInput {
     pub name: String,
+    #[serde(rename = "type")]
+    pub ty: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "no_unknown_fields", serde(deny_unknown_fields))]
+pub struct AbiOuput {
+    #[serde(rename = "type")]
     pub ty: String,
 }
 
