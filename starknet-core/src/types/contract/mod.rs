@@ -49,6 +49,7 @@ pub struct CompiledClass {
     pub compiler_version: String,
     #[serde_as(as = "Vec<UfeHex>")]
     pub bytecode: Vec<FieldElement>,
+    #[serde(rename = "pythonic_hints")]
     pub hints: Vec<Hint>,
     pub entry_points_by_type: EntrypointList<CompiledClassEntrypoint>,
 }
@@ -336,12 +337,13 @@ impl<'de> Deserialize<'de> for CompiledClass {
     {
         #[serde_as]
         #[derive(Deserialize)]
-        #[cfg_attr(feature = "no_unknown_fields", serde(deny_unknown_fields))]
+        // #[cfg_attr(feature = "no_unknown_fields", serde(deny_unknown_fields))]
         struct Intermediate {
             prime: String,
             compiler_version: String,
             #[serde_as(as = "Vec<UfeHex>")]
             bytecode: Vec<FieldElement>,
+            #[serde(rename = "pythonic_hints")]
             hints: Vec<Hint>,
             entry_points_by_type: EntrypointList<CompiledClassEntrypoint>,
         }
